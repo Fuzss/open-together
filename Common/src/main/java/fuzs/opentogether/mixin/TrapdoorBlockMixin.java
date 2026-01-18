@@ -1,24 +1,21 @@
 package fuzs.opentogether.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import fuzs.opentogether.OpenTogether;
 import fuzs.opentogether.config.ServerConfig;
 import fuzs.opentogether.util.OpenTogetherHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.DoorBlock;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DoorHingeSide;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.redstone.Orientation;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
@@ -27,19 +24,16 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
-@Mixin(DoorBlock.class)
-abstract class DoorBlockMixin extends Block {
+@Mixin(TrapDoorBlock.class)
+abstract class TrapdoorBlockMixin extends HorizontalDirectionalBlock {
     @Shadow
     @Final
     private static BooleanProperty OPEN;
     @Shadow
     @Final
-    private static EnumProperty<DoorHingeSide> HINGE;
-    @Shadow
-    @Final
     private static BooleanProperty POWERED;
 
-    public DoorBlockMixin(Properties properties) {
+    protected TrapdoorBlockMixin(Properties properties) {
         super(properties);
     }
 
@@ -52,37 +46,16 @@ abstract class DoorBlockMixin extends Block {
 
         // This specifically catches the super call, which is the only case that returns the unaltered block state.
         if (blockState == originalBlockState) {
-            if (OpenTogetherHelper.getDoubleDoorDirection(blockState) == direction) {
-                if (OpenTogetherHelper.isCommonDoubleDoor(blockState, neighborBlockState)) {
+            if (OpenTogetherHelper.isDoubleTrapDoorDirection(blockState.getValue(FACING), direction)) {
+                if (OpenTogetherHelper.isCommonDoubleTrapDoor(blockState, neighborBlockState, direction.getAxis())) {
                     return blockState.getBlock()
                             .withPropertiesOf(neighborBlockState)
-                            .setValue(HINGE, blockState.getValue(HINGE));
+                            .setValue(FACING, blockState.getValue(FACING));
                 }
             }
         }
 
         return blockState;
-    }
-
-    @WrapWithCondition(method = "onExplosionHit",
-                       at = @At(value = "INVOKE",
-                                target = "Lnet/minecraft/world/level/block/DoorBlock;setOpen(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/level/Level;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;Z)V"))
-    protected boolean onExplosionHit(DoorBlock doorBlock, Entity entity, Level level, BlockState blockState, BlockPos blockPos, boolean isOpen) {
-        if (!OpenTogether.CONFIG.getHolder(ServerConfig.class).isAvailable()
-                || !OpenTogether.CONFIG.get(ServerConfig.class).supportsCurrentEnvironment(level.isClientSide())) {
-            return true;
-        }
-
-        // The wind charge will trigger multiple block parts of the door, leading to block state update chaos in #updateShape.
-        // To prevent that, vanilla limits the interaction to the lower door half. We limit it even further to the left door side for double doors.
-        if (blockState.getValue(HINGE) == DoorHingeSide.LEFT) {
-            return true;
-        } else {
-            Direction neighborDirection = OpenTogetherHelper.getDoubleDoorDirection(blockState);
-            BlockPos neighborBlockPos = blockPos.relative(neighborDirection);
-            BlockState neighborBlockState = level.getBlockState(neighborBlockPos);
-            return !OpenTogetherHelper.isCommonDoubleDoor(blockState, neighborBlockState);
-        }
     }
 
     @ModifyReturnValue(method = "getStateForPlacement", at = @At("RETURN"))
@@ -95,7 +68,7 @@ abstract class DoorBlockMixin extends Block {
 
         if (blockState != null) {
             if (!blockState.getValue(POWERED) && !blockState.getValue(OPEN)) {
-                if (OpenTogetherHelper.hasAnyNeighborDoorSignal(context.getLevel(),
+                if (OpenTogetherHelper.hasAnyNeighborTrapDoorSignal(context.getLevel(),
                         context.getClickedPos(),
                         blockState)) {
                     return blockState.setValue(POWERED, Boolean.TRUE).setValue(OPEN, Boolean.TRUE);
@@ -116,7 +89,7 @@ abstract class DoorBlockMixin extends Block {
         }
 
         if (!hasNeighborSignal) {
-            return OpenTogetherHelper.hasAnyNeighborDoorSignal(level, blockPos, blockState);
+            return OpenTogetherHelper.hasAnyNeighborTrapDoorSignal(level, blockPos, blockState);
         } else {
             return true;
         }

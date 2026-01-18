@@ -9,7 +9,7 @@ dependencies {
 multiloader {
     mixins {
         mixin(
-            "DoorBlockMixin"
+            "DoorBlockMixin", "FenceGateBlockMixin", "TrapdoorBlockMixin"
         )
     }
 }
