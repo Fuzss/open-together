@@ -43,7 +43,7 @@ public class ClientConfig extends ServerConfig {
 
     @Override
     public boolean supportsCurrentEnvironment(boolean isClientSide) {
-        if (!this.openBlocksTogetherValue.get()) {
+        if (!this.openAllBlocksTogetherValue.get()) {
             return false;
         } else if (NetworkingHelper.isModPresentServerside(OpenTogether.MOD_ID)) {
             return false;
