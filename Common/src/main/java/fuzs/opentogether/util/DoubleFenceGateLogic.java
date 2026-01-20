@@ -1,18 +1,24 @@
 package fuzs.opentogether.util;
 
+import fuzs.opentogether.config.ServerConfig;
 import fuzs.opentogether.config.SharedConfig;
 import fuzs.opentogether.init.ModRegistry;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.FenceGateBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.redstone.NeighborUpdater;
+import org.jspecify.annotations.Nullable;
 
-import java.util.function.Predicate;
-
-public class DoubleFenceGateLogic implements DoubleBlockLogic {
+public class DoubleFenceGateLogic extends AbstractDoubleBlockLogic {
     public static final DoubleFenceGateLogic INSTANCE = new DoubleFenceGateLogic();
+
+    @Override
+    boolean isPositionWithinRange(BlockPos blockPos) {
+        return blockPos.distManhattan(BlockPos.ZERO) <= this.getMaxBlockDistance();
+    }
 
     @Override
     public boolean isEnabled(SharedConfig sharedConfig) {
@@ -25,17 +31,9 @@ public class DoubleFenceGateLogic implements DoubleBlockLogic {
     }
 
     @Override
-    public void forBlockNeighbors(BlockState blockState, Predicate<Direction> predicate) {
-        for (Direction direction : NeighborUpdater.UPDATE_ORDER) {
-            if (this.isConnectedDirection(blockState, direction) && predicate.test(direction)) {
-                break;
-            }
-        }
-    }
-
-    @Override
-    public boolean isConnectedDirection(BlockState blockState, Direction neighborDirection) {
-        return blockState.getValue(FenceGateBlock.FACING).getAxis() != neighborDirection.getAxis();
+    public boolean isNeighborDirection(BlockState blockState, Vec3i neighborNormal) {
+        Direction.Axis axis = blockState.getValue(FenceGateBlock.FACING).getAxis();
+        return axis.choose(neighborNormal.getX(), neighborNormal.getY(), neighborNormal.getZ()) == 0;
     }
 
     @Override
@@ -49,8 +47,13 @@ public class DoubleFenceGateLogic implements DoubleBlockLogic {
     }
 
     @Override
-    public boolean isDoubleBlock(BlockState blockState, BlockState neighborBlockState, Direction.Axis axis) {
+    public boolean isDoubleBlock(BlockState blockState, BlockState neighborBlockState, Direction.@Nullable Axis axis) {
         return neighborBlockState.getValue(FenceGateBlock.FACING).getAxis()
                 == blockState.getValue(FenceGateBlock.FACING).getAxis();
+    }
+
+    @Override
+    public int getRecursiveUpdateLimit(ServerConfig serverConfig) {
+        return serverConfig.doubleFenceGatesUpdateLimit;
     }
 }

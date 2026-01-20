@@ -1,6 +1,7 @@
 package fuzs.opentogether.client.handler;
 
 import fuzs.opentogether.OpenTogether;
+import fuzs.opentogether.client.util.ClientDoubleBlockLogic;
 import fuzs.opentogether.client.util.ClientDoubleDoorLogic;
 import fuzs.opentogether.client.util.ClientDoubleFenceGateLogic;
 import fuzs.opentogether.client.util.ClientDoubleTrapDoorLogic;
@@ -23,7 +24,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class BlockInteractionHandler {
-    private static final Collection<DoubleBlockLogic> DOUBLE_BLOCK_LOGIC = List.of(ClientDoubleDoorLogic.INSTANCE,
+    private static final Collection<ClientDoubleBlockLogic> CLIENT_DOUBLE_BLOCK_LOGIC = List.of(ClientDoubleDoorLogic.INSTANCE,
             ClientDoubleFenceGateLogic.INSTANCE,
             ClientDoubleTrapDoorLogic.INSTANCE);
     private static boolean isProcessingInteraction;
@@ -39,7 +40,7 @@ public class BlockInteractionHandler {
                 BlockPos blockPos = blockHitResult.getBlockPos();
                 BlockState blockState = minecraft.level.getBlockState(blockPos);
                 isProcessingInteraction = true;
-                for (DoubleBlockLogic doubleBlockLogic : DOUBLE_BLOCK_LOGIC) {
+                for (ClientDoubleBlockLogic doubleBlockLogic : CLIENT_DOUBLE_BLOCK_LOGIC) {
                     if (processInteraction(minecraft,
                             doubleBlockLogic,
                             blockPos,
@@ -57,7 +58,7 @@ public class BlockInteractionHandler {
         return EventResult.PASS;
     }
 
-    private static boolean processInteraction(Minecraft minecraft, DoubleBlockLogic doubleBlockLogic, BlockPos blockPos, BlockState blockState, Direction direction) {
+    private static boolean processInteraction(Minecraft minecraft, ClientDoubleBlockLogic doubleBlockLogic, BlockPos blockPos, BlockState blockState, Direction direction) {
         if (doubleBlockLogic.getBlockType().isInstance(blockState.getBlock())) {
             Collection<BlockPos> neighborBlockPositions = doubleBlockLogic.getValidDoubleNeighbors(minecraft.level,
                     blockPos,
@@ -65,7 +66,8 @@ public class BlockInteractionHandler {
                     (Level level, BlockPos neighborBlockPos) -> {
                         return blockState.getValue(BlockStateProperties.OPEN) == level.getBlockState(neighborBlockPos)
                                 .getValue(BlockStateProperties.OPEN);
-                    }, false);
+                    },
+                    false);
             if (!neighborBlockPositions.isEmpty()) {
                 for (BlockPos neighborBlockPos : neighborBlockPositions) {
                     minecraft.hitResult = new BlockHitResult(Vec3.atCenterOf(neighborBlockPos),

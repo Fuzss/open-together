@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.Block;
 
 import java.util.List;
 
-public class ClientConfig extends ServerConfig {
+public class ClientConfig extends CommonConfig {
     @Config(name = "double_doors", description = "Blocks that may act as double doors and can open together.")
     List<String> doubleDoorsRaw = KeyedValueProvider.tagAppender(Registries.BLOCK)
             .addTag(BlockTags.DOORS)

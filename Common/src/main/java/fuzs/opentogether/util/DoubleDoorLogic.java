@@ -1,9 +1,11 @@
 package fuzs.opentogether.util;
 
+import fuzs.opentogether.config.ServerConfig;
 import fuzs.opentogether.config.SharedConfig;
 import fuzs.opentogether.init.ModRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -11,7 +13,9 @@ import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoorHingeSide;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import org.jspecify.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.function.Predicate;
 
 public class DoubleDoorLogic implements DoubleBlockLogic {
@@ -44,19 +48,19 @@ public class DoubleDoorLogic implements DoubleBlockLogic {
     }
 
     @Override
-    public void forBlockNeighbors(BlockState blockState, Predicate<Direction> predicate) {
-        predicate.test(this.getConnectedDirection(blockState));
+    public void forBlockNeighbors(BlockState blockState, Predicate<BlockPos> predicate) {
+        predicate.test(new BlockPos(this.getNeighborNormal(blockState)));
     }
 
     @Override
-    public boolean isConnectedDirection(BlockState blockState, Direction neighborDirection) {
-        return this.getConnectedDirection(blockState) == neighborDirection;
+    public boolean isNeighborDirection(BlockState blockState, Vec3i neighborNormal) {
+        return Objects.equals(this.getNeighborNormal(blockState), neighborNormal);
     }
 
-    public Direction getConnectedDirection(BlockState blockState) {
+    private Vec3i getNeighborNormal(BlockState blockState) {
         Direction direction = blockState.getValue(DoorBlock.FACING);
-        return blockState.getValue(DoorBlock.HINGE) == DoorHingeSide.LEFT ? direction.getClockWise() :
-                direction.getCounterClockWise();
+        return (blockState.getValue(DoorBlock.HINGE) == DoorHingeSide.LEFT ? direction.getClockWise() :
+                direction.getCounterClockWise()).getUnitVec3i();
     }
 
     @Override
@@ -70,11 +74,16 @@ public class DoubleDoorLogic implements DoubleBlockLogic {
     }
 
     @Override
-    public boolean isDoubleBlock(BlockState blockState, BlockState neighborBlockState, Direction.Axis axis) {
+    public boolean isDoubleBlock(BlockState blockState, BlockState neighborBlockState, Direction.@Nullable Axis axis) {
         return ((DoorBlock) blockState.getBlock()).type().canOpenByHand()
                 == ((DoorBlock) neighborBlockState.getBlock()).type().canOpenByHand()
                 && neighborBlockState.getValue(DoorBlock.HINGE) != blockState.getValue(DoorBlock.HINGE)
                 && neighborBlockState.getValue(DoorBlock.FACING) == blockState.getValue(DoorBlock.FACING)
                 && neighborBlockState.getValue(DoorBlock.HALF) == blockState.getValue(DoorBlock.HALF);
+    }
+
+    @Override
+    public int getRecursiveUpdateLimit(ServerConfig serverConfig) {
+        return serverConfig.doubleDoorsUpdateLimit;
     }
 }

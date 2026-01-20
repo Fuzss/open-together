@@ -6,7 +6,7 @@ import fuzs.puzzleslib.api.config.v3.serialization.ConfigDataSet;
 import net.minecraft.world.level.block.Block;
 
 public class ClientDoubleDoorLogic extends DoubleDoorLogic implements ClientDoubleBlockLogic {
-    public static final DoubleDoorLogic INSTANCE = new ClientDoubleDoorLogic();
+    public static final ClientDoubleDoorLogic INSTANCE = new ClientDoubleDoorLogic();
 
     @Override
     public ConfigDataSet<Block> getBlockDataSet(ClientConfig clientConfig) {

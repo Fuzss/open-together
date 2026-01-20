@@ -5,13 +5,14 @@ import fuzs.opentogether.config.ServerConfig;
 import fuzs.opentogether.config.SharedConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -31,7 +32,7 @@ public interface DoubleBlockLogic {
 
     default @Nullable BlockState updateShape(LevelReader level, BlockState blockState, BlockState neighborBlockState, Direction direction) {
         if (this.isEnabledGlobally(level.isClientSide())) {
-            if (this.isConnectedDirection(blockState, direction) && this.isValidDoubleBlock(blockState,
+            if (this.isNeighborDirection(blockState, direction.getUnitVec3i()) && this.isValidDoubleBlock(blockState,
                     neighborBlockState,
                     direction.getAxis())) {
                 return this.copyBlockState(blockState, neighborBlockState);
@@ -57,11 +58,12 @@ public interface DoubleBlockLogic {
     default Collection<BlockPos> getValidDoubleNeighbors(Level level, BlockPos blockPos, BlockState blockState, BiPredicate<Level, BlockPos> predicate, boolean shortCircuit) {
         if (this.isEnabledGlobally(level.isClientSide())) {
             Set<BlockPos> neighborBlockPositions = new HashSet<>();
-            this.forBlockNeighbors(blockState, (Direction direction) -> {
-                BlockPos neighborBlockPos = blockPos.relative(direction);
+            this.forBlockNeighbors(blockState, (BlockPos offsetBlockPos) -> {
+                BlockPos neighborBlockPos = blockPos.offset(offsetBlockPos);
                 BlockState neighborBlockState = level.getBlockState(neighborBlockPos);
-                if (this.isValidDoubleBlock(blockState, neighborBlockState, direction.getAxis())
-                        && predicate.test(level, neighborBlockPos)) {
+                Direction.Axis axis = this.chooseAxis(blockState, offsetBlockPos);
+                if (this.isValidDoubleBlock(blockState, neighborBlockState, axis) && predicate.test(level,
+                        neighborBlockPos)) {
                     neighborBlockPositions.add(neighborBlockPos);
                     return shortCircuit;
                 } else {
@@ -78,9 +80,13 @@ public interface DoubleBlockLogic {
         return !this.getValidDoubleNeighbors(level, blockPos, blockState, Level::hasNeighborSignal, true).isEmpty();
     }
 
-    void forBlockNeighbors(BlockState blockState, Predicate<Direction> predicate);
+    void forBlockNeighbors(BlockState blockState, Predicate<BlockPos> predicate);
 
-    boolean isConnectedDirection(BlockState blockState, Direction neighborDirection);
+    default Direction.@Nullable Axis chooseAxis(BlockState blockState, BlockPos blockPos) {
+        return null;
+    }
+
+    boolean isNeighborDirection(BlockState blockState, Vec3i neighborNormal);
 
     Class<?> getBlockType();
 
@@ -90,13 +96,25 @@ public interface DoubleBlockLogic {
         return blockState.is(this.getBlockTag());
     }
 
-    boolean isDoubleBlock(BlockState blockState, BlockState neighborBlockState, Direction.Axis axis);
+    boolean isDoubleBlock(BlockState blockState, BlockState neighborBlockState, Direction.@Nullable Axis axis);
 
-    default boolean isValidDoubleBlock(BlockState blockState, BlockState neighborBlockState, Direction.Axis axis) {
+    default boolean isValidDoubleBlock(BlockState blockState, BlockState neighborBlockState, Direction.@Nullable Axis axis) {
         return this.getBlockType().isInstance(blockState.getBlock()) && this.getBlockType()
                 .isInstance(neighborBlockState.getBlock()) && this.isValidDoubleBlock(blockState)
                 && this.isValidDoubleBlock(neighborBlockState) && this.isDoubleBlock(blockState,
                 neighborBlockState,
                 axis);
+    }
+
+    int getRecursiveUpdateLimit(ServerConfig serverConfig);
+
+    default int getRecursionLeft(Level level, BlockState blockState) {
+        if (this.isEnabledGlobally(level.isClientSide())) {
+            if (this.getBlockType().isInstance(blockState.getBlock()) && this.isValidDoubleBlock(blockState)) {
+                return this.getRecursiveUpdateLimit(OpenTogether.CONFIG.get(ServerConfig.class));
+            }
+        }
+
+        return Integer.MAX_VALUE;
     }
 }
