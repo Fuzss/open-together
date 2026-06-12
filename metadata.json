@@ -7,7 +7,7 @@
         "authors": [
             "Fuzs"
         ],
-        "description": "Example description.",
+        "description": "Open matching double doors, trapdoors, and fence gates with a single click.",
         "license": "MPL-2.0"
     },
     "dependencies": [
@@ -36,8 +36,18 @@
     ],
     "links": [
         {
+            "name": "curseforge",
+            "slug": "open-together",
+            "id": "1572988"
+        },
+        {
             "name": "github",
             "slug": "open-together"
+        },
+        {
+            "name": "modrinth",
+            "slug": "open-together",
+            "id": "ssyvO6WG"
         }
     ],
     "environments": {
