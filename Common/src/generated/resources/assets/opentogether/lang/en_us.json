@@ -1,6 +1,6 @@
 {
-  "key.category.opentogether.main": "Open Together",
-  "key.opentogether.toggle_opening_blocks_together": "Toggle Opening Blocks Together",
-  "key.opentogether.toggle_opening_blocks_together.message": "Open Blocks Together: %s",
-  "key.opentogether.toggle_opening_blocks_together.unavailable": "Opening blocks together is controlled by the server."
+  "key.categories.opentogether": "Open Together",
+  "key.toggle_opening_blocks_together": "Toggle Opening Blocks Together",
+  "key.toggle_opening_blocks_together.message": "Open Blocks Together: %s",
+  "key.toggle_opening_blocks_together.unavailable": "Opening blocks together is controlled by the server."
 }

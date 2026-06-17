@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoorHingeSide;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -60,7 +60,7 @@ public class DoubleDoorLogic implements DoubleBlockLogic {
     private Vec3i getNeighborNormal(BlockState blockState) {
         Direction direction = blockState.getValue(DoorBlock.FACING);
         return (blockState.getValue(DoorBlock.HINGE) == DoorHingeSide.LEFT ? direction.getClockWise() :
-                direction.getCounterClockWise()).getUnitVec3i();
+                direction.getCounterClockWise()).getNormal();
     }
 
     @Override

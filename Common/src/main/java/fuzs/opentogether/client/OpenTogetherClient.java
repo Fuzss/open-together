@@ -16,7 +16,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class OpenTogetherClient implements ClientModConstructor {
     public static final KeyMapping TOGGLE_OPENING_BLOCKS_TOGETHER_KEY_MAPPING = KeyMappingHelper.registerUnboundKeyMapping(

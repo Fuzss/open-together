@@ -5,19 +5,16 @@ import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import fuzs.opentogether.util.DoubleDoorLogic;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.ScheduledTickAccess;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoorHingeSide;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.redstone.Orientation;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -35,7 +32,7 @@ abstract class DoorBlockMixin extends Block {
     }
 
     @ModifyReturnValue(method = "updateShape", at = @At("RETURN"))
-    protected BlockState updateShape(BlockState blockState, BlockState originalBlockState, LevelReader level, ScheduledTickAccess scheduledTickAccess, BlockPos blockPos, Direction direction, BlockPos neighborBlockPos, BlockState neighborBlockState, RandomSource randomSource) {
+    protected BlockState updateShape(BlockState blockState, BlockState originalBlockState, Direction direction, BlockState neighborBlockState, LevelAccessor level, BlockPos blockPos, BlockPos neighborBlockPos) {
         // This specifically catches the super call, which is the only case that returns the unaltered block state.
         if (blockState == originalBlockState) {
             BlockState newBlockState = DoubleDoorLogic.INSTANCE.updateShape(level,
@@ -84,7 +81,7 @@ abstract class DoorBlockMixin extends Block {
     }
 
     @ModifyVariable(method = "neighborChanged", at = @At("STORE"), ordinal = 1)
-    protected boolean neighborChanged(boolean hasNeighborSignal, BlockState blockState, Level level, BlockPos blockPos, Block neighborBlock, @Nullable Orientation orientation, boolean movedByPiston) {
+    protected boolean neighborChanged(boolean hasNeighborSignal, BlockState blockState, Level level, BlockPos blockPos, Block neighborBlock, BlockPos neighborPos, boolean movedByPiston) {
         if (!hasNeighborSignal) {
             return DoubleDoorLogic.INSTANCE.hasAnyNeighborSignal(level, blockPos, blockState);
         } else {

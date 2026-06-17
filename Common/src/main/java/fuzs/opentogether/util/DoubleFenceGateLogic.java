@@ -10,7 +10,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.FenceGateBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class DoubleFenceGateLogic extends AbstractDoubleBlockLogic {
     public static final DoubleFenceGateLogic INSTANCE = new DoubleFenceGateLogic();

@@ -12,7 +12,7 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -32,7 +32,7 @@ public interface DoubleBlockLogic {
 
     default @Nullable BlockState updateShape(LevelReader level, BlockState blockState, BlockState neighborBlockState, Direction direction) {
         if (this.isEnabledGlobally(level.isClientSide())) {
-            if (this.isNeighborDirection(blockState, direction.getUnitVec3i()) && this.isValidDoubleBlock(blockState,
+            if (this.isNeighborDirection(blockState, direction.getNormal()) && this.isValidDoubleBlock(blockState,
                     neighborBlockState,
                     direction.getAxis())) {
                 return this.copyBlockState(blockState, neighborBlockState);
