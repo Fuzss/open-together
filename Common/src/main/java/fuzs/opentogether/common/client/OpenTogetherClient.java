@@ -43,7 +43,7 @@ public class OpenTogetherClient implements ClientModConstructor {
                 KeyActivationHandler.forGame((Minecraft minecraft) -> {
                     SharedConfig sharedConfig = chooseSharedConfig(minecraft);
                     Component component = chooseFeedbackComponent(sharedConfig);
-                    minecraft.gui.setOverlayMessage(component, false);
+                    minecraft.gui.hud.setOverlayMessage(component, false);
                 }));
     }
 
