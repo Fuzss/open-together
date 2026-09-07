@@ -15,7 +15,7 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 import java.util.List;
 import java.util.Objects;
 
-public class CommonConfig extends SharedConfig implements ConfigCore {
+public class CommonConfig implements ConfigCore, GlobalSharedConfig {
     @Config(description = "Can double doors open together.")
     public final DoubleBlockConfig doubleDoors = new DoubleBlockConfig(BlockTags.DOORS,
             ModRegistry.DOUBLE_DOORS_BLOCK_TAG);
@@ -54,29 +54,29 @@ public class CommonConfig extends SharedConfig implements ConfigCore {
     }
 
     public boolean toggleAllBlocks() {
-        this.allBlocksValue.set(!this.allBlocksValue.get());
+        this.allBlocksValue.set(!this.getAllBlocksOption());
         this.allBlocksValue.save();
-        return this.allBlocksValue.get();
-    }
-
-    @Override
-    boolean getDoubleDoorsOption() {
-        return this.doubleDoors.openTogether;
-    }
-
-    @Override
-    boolean getDoubleFenceGatesOption() {
-        return this.doubleFenceGates.openTogether;
-    }
-
-    @Override
-    boolean getDoubleTrapdoorsOption() {
-        return this.doubleTrapdoors.openTogether;
+        return this.getAllBlocksOption();
     }
 
     @Override
     public boolean getAllBlocksOption() {
         return this.allBlocksValue.get();
+    }
+
+    @Override
+    public boolean getDoubleDoorsOption() {
+        return this.doubleDoors.openTogether;
+    }
+
+    @Override
+    public boolean getDoubleFenceGatesOption() {
+        return this.doubleFenceGates.openTogether;
+    }
+
+    @Override
+    public boolean getDoubleTrapdoorsOption() {
+        return this.doubleTrapdoors.openTogether;
     }
 
     public static class DoubleBlockConfig implements ConfigCore {

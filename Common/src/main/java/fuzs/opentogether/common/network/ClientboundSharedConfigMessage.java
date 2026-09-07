@@ -2,6 +2,7 @@ package fuzs.opentogether.common.network;
 
 import fuzs.opentogether.common.OpenTogether;
 import fuzs.opentogether.common.config.CommonConfig;
+import fuzs.opentogether.common.config.GlobalSharedConfig;
 import fuzs.opentogether.common.config.SharedConfig;
 import fuzs.opentogether.common.config.SharedState;
 import fuzs.puzzleslib.common.api.network.v4.message.MessageListener;
@@ -11,7 +12,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
 public record ClientboundSharedConfigMessage(boolean openAllBlocksTogether,
-                                             SharedConfig sharedConfig) implements ClientboundConfigurationMessage {
+                                             GlobalSharedConfig sharedConfig) implements ClientboundConfigurationMessage {
     public static final StreamCodec<ByteBuf, ClientboundSharedConfigMessage> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.BOOL,
             ClientboundSharedConfigMessage::openAllBlocksTogether,
@@ -23,8 +24,8 @@ public record ClientboundSharedConfigMessage(boolean openAllBlocksTogether,
         return of(OpenTogether.CONFIG.get(CommonConfig.class));
     }
 
-    public static ClientboundSharedConfigMessage of(SharedConfig sharedConfig) {
-        return new ClientboundSharedConfigMessage(sharedConfig.getAllBlocksOption(), sharedConfig.copy());
+    public static ClientboundSharedConfigMessage of(GlobalSharedConfig sharedConfig) {
+        return new ClientboundSharedConfigMessage(sharedConfig.getAllBlocksOption(), sharedConfig.plainCopy());
     }
 
     @Override

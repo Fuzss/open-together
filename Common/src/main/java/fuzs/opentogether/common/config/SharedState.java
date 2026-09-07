@@ -7,13 +7,13 @@ import net.minecraft.network.codec.StreamCodec;
 
 import java.util.Optional;
 
-public final class SharedState extends SharedConfig {
-    public static final StreamCodec<ByteBuf, SharedConfig> STREAM_CODEC = StreamCodec.composite(ByteBufCodecs.BOOL,
-            SharedConfig::getDoubleDoorsOption,
+public final class SharedState implements GlobalSharedConfig {
+    public static final StreamCodec<ByteBuf, GlobalSharedConfig> STREAM_CODEC = StreamCodec.composite(ByteBufCodecs.BOOL,
+            GlobalSharedConfig::getDoubleDoorsOption,
             ByteBufCodecs.BOOL,
-            SharedConfig::getDoubleFenceGatesOption,
+            GlobalSharedConfig::getDoubleFenceGatesOption,
             ByteBufCodecs.BOOL,
-            SharedConfig::getDoubleTrapdoorsOption,
+            GlobalSharedConfig::getDoubleTrapdoorsOption,
             SharedState::new);
 
     private final Optional<Boolean> allBlocks;
@@ -33,27 +33,27 @@ public final class SharedState extends SharedConfig {
     }
 
     @Override
-    boolean getDoubleDoorsOption() {
-        return this.doubleDoors;
-    }
-
-    @Override
-    boolean getDoubleFenceGatesOption() {
-        return this.doubleFenceGates;
-    }
-
-    @Override
-    boolean getDoubleTrapdoorsOption() {
-        return this.doubleTrapdoors;
-    }
-
-    @Override
     public boolean getAllBlocksOption() {
         return this.allBlocks.orElseGet(() -> OpenTogether.CONFIG.get(CommonConfig.class).getAllBlocksOption());
     }
 
     @Override
-    public SharedConfig setAllBlocks(boolean allBlocks) {
+    public boolean getDoubleDoorsOption() {
+        return this.doubleDoors;
+    }
+
+    @Override
+    public boolean getDoubleFenceGatesOption() {
+        return this.doubleFenceGates;
+    }
+
+    @Override
+    public boolean getDoubleTrapdoorsOption() {
+        return this.doubleTrapdoors;
+    }
+
+    @Override
+    public GlobalSharedConfig setAllBlocks(boolean allBlocks) {
         return new SharedState(Optional.of(allBlocks),
                 this.getDoubleDoorsOption(),
                 this.getDoubleFenceGatesOption(),
