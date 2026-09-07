@@ -13,9 +13,9 @@ import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.util.List;
+import java.util.Objects;
 
-public final class CommonConfig implements ConfigCore, SharedConfig {
-    private SharedConfig sharedConfig = this;
+public class CommonConfig extends SharedConfig implements ConfigCore {
     @Config(description = "Can double doors open together.")
     public final DoubleBlockConfig doubleDoors = new DoubleBlockConfig(BlockTags.DOORS,
             ModRegistry.DOUBLE_DOORS_BLOCK_TAG);
@@ -26,18 +26,23 @@ public final class CommonConfig implements ConfigCore, SharedConfig {
     public final DoubleBlockConfig doubleTrapdoors = new DoubleBlockConfig(BlockTags.TRAPDOORS,
             ModRegistry.DOUBLE_TRAPDOORS_BLOCK_TAG);
 
-    private ModConfigSpec.ConfigValue<Boolean> openAllBlocksTogetherValue;
+    private ModConfigSpec.ConfigValue<Boolean> allBlocksValue;
+    private SharedConfig sharedConfig;
+
+    public CommonConfig() {
+        this.resetSharedConfig();
+    }
 
     @Override
     public void addToBuilder(ModConfigSpec.Builder builder, ValueCallback callback) {
-        this.openAllBlocksTogetherValue = builder.comment(
+        this.allBlocksValue = builder.comment(
                         "Use blocks that can be opened from interacting or using redstone together with other blocks of the same kind surrounding them.",
                         "E.g. this allows double doors to be opened together via all means supported by vanilla.")
                 .define("open_all_blocks_together", true);
     }
 
     public SharedConfig getSharedConfig(boolean isClientSide) {
-        return isClientSide ? this.sharedConfig : this;
+        return isClientSide ? Objects.requireNonNull(this.sharedConfig) : this;
     }
 
     public void setSharedConfig(SharedConfig sharedConfig) {
@@ -48,35 +53,36 @@ public final class CommonConfig implements ConfigCore, SharedConfig {
         this.sharedConfig = this;
     }
 
-    public boolean toggleOpenBlocksTogether() {
-        this.openAllBlocksTogetherValue.set(!this.openAllBlocksTogetherValue.get());
-        this.openAllBlocksTogetherValue.save();
-        return this.openAllBlocksTogetherValue.get();
-    }
-
-    public boolean openAllBlocksTogether() {
-        return this.openAllBlocksTogetherValue.get();
+    public boolean toggleAllBlocks() {
+        this.allBlocksValue.set(!this.allBlocksValue.get());
+        this.allBlocksValue.save();
+        return this.allBlocksValue.get();
     }
 
     @Override
-    public boolean openDoubleDoorsTogether() {
-        return this.doubleDoors.openTogether && this.openAllBlocksTogether();
+    boolean getDoubleDoorsOption() {
+        return this.doubleDoors.openTogether;
     }
 
     @Override
-    public boolean openDoubleFenceGatesTogether() {
-        return this.doubleFenceGates.openTogether && this.openAllBlocksTogether();
+    boolean getDoubleFenceGatesOption() {
+        return this.doubleFenceGates.openTogether;
     }
 
     @Override
-    public boolean openDoubleTrapdoorsTogether() {
-        return this.doubleTrapdoors.openTogether && this.openAllBlocksTogether();
+    boolean getDoubleTrapdoorsOption() {
+        return this.doubleTrapdoors.openTogether;
+    }
+
+    @Override
+    public boolean getAllBlocksOption() {
+        return this.allBlocksValue.get();
     }
 
     public static class DoubleBlockConfig implements ConfigCore {
         @Config(description = "Can double blocks open together.", worldRestart = true)
         boolean openTogether = true;
-        @Config(name = "valid_blocks", description = "Blocks that may act as double blocks and can open together.")
+        @Config(name = "valid_blocks", description = "Blocks that may act as double blocks which can open together.")
         List<String> validBlocksRaw;
 
         public ConfigDataSet<Block> validBlocks = ConfigDataSet.from(Registries.BLOCK);

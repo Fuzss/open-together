@@ -24,7 +24,8 @@ import java.util.function.Predicate;
 
 public interface DoubleBlockLogic {
     default boolean isEnabledGlobally(boolean isClientSide) {
-        return this.isEnabled(OpenTogether.CONFIG.get(CommonConfig.class).getSharedConfig(isClientSide));
+        return OpenTogether.CONFIG.getHolder(CommonConfig.class).isAvailable()
+                && this.isEnabled(OpenTogether.CONFIG.get(CommonConfig.class).getSharedConfig(isClientSide));
     }
 
     boolean isEnabled(SharedConfig sharedConfig);

@@ -44,6 +44,7 @@ public class OpenTogether implements ModConstructor {
 
     @Override
     public void onRegisterPayloadTypes(PayloadTypesContext context) {
+        context.optional();
         context.configurationToClient(ClientboundSharedConfigMessage.class,
                 ClientboundSharedConfigMessage.STREAM_CODEC);
     }

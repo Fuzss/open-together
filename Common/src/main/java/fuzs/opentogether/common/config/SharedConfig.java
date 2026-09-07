@@ -1,9 +1,33 @@
 package fuzs.opentogether.common.config;
 
-public sealed interface SharedConfig permits CommonConfig, SharedState {
-    boolean openDoubleDoorsTogether();
+public abstract class SharedConfig {
+    abstract boolean getDoubleDoorsOption();
 
-    boolean openDoubleFenceGatesTogether();
+    abstract boolean getDoubleFenceGatesOption();
 
-    boolean openDoubleTrapdoorsTogether();
+    abstract boolean getDoubleTrapdoorsOption();
+
+    public abstract boolean getAllBlocksOption();
+
+    public final boolean openDoubleDoorsTogether() {
+        return this.getAllBlocksOption() && this.getDoubleDoorsOption();
+    }
+
+    public final boolean openDoubleFenceGatesTogether() {
+        return this.getAllBlocksOption() && this.getDoubleFenceGatesOption();
+    }
+
+    public final boolean openDoubleTrapdoorsTogether() {
+        return this.getAllBlocksOption() && this.getDoubleTrapdoorsOption();
+    }
+
+    public final SharedConfig copy() {
+        return new SharedState(this.getDoubleDoorsOption(),
+                this.getDoubleFenceGatesOption(),
+                this.getDoubleTrapdoorsOption());
+    }
+
+    public SharedConfig setAllBlocks(boolean allBlocks) {
+        return this;
+    }
 }

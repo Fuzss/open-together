@@ -7,56 +7,56 @@ import net.minecraft.network.codec.StreamCodec;
 
 import java.util.Optional;
 
-public record SharedState(Optional<Boolean> openAllBlocksTogether,
-                          boolean openDoubleDoorsTogether,
-                          boolean openDoubleFenceGatesTogether,
-                          boolean openDoubleTrapdoorsTogether) implements SharedConfig {
-    public static final StreamCodec<ByteBuf, SharedState> STREAM_CODEC = StreamCodec.composite(ByteBufCodecs.BOOL,
-            SharedState::openDoubleDoorsTogether,
+public final class SharedState extends SharedConfig {
+    public static final StreamCodec<ByteBuf, SharedConfig> STREAM_CODEC = StreamCodec.composite(ByteBufCodecs.BOOL,
+            SharedConfig::getDoubleDoorsOption,
             ByteBufCodecs.BOOL,
-            SharedState::openDoubleFenceGatesTogether,
+            SharedConfig::getDoubleFenceGatesOption,
             ByteBufCodecs.BOOL,
-            SharedState::openDoubleTrapdoorsTogether,
+            SharedConfig::getDoubleTrapdoorsOption,
             SharedState::new);
 
-    public SharedState(boolean openDoubleDoorsTogether, boolean openDoubleFenceGatesTogether, boolean openDoubleTrapdoorsTogether) {
-        this(Optional.empty(), openDoubleDoorsTogether, openDoubleFenceGatesTogether, openDoubleTrapdoorsTogether);
+    private final Optional<Boolean> allBlocks;
+    private final boolean doubleDoors;
+    private final boolean doubleFenceGates;
+    private final boolean doubleTrapdoors;
+
+    SharedState(boolean doubleDoors, boolean doubleFenceGates, boolean doubleTrapdoors) {
+        this(Optional.empty(), doubleDoors, doubleFenceGates, doubleTrapdoors);
     }
 
-    public SharedState openAllBlocksTogether(boolean openAllBlocksTogether) {
-        return this.openAllBlocksTogether.isPresent() && this.openAllBlocksTogether.get() == openAllBlocksTogether ?
-                this : new SharedState(Optional.of(openAllBlocksTogether),
-                this.openDoubleDoorsTogether,
-                this.openDoubleFenceGatesTogether,
-                this.openDoubleTrapdoorsTogether);
-    }
-
-    private boolean openAllBlocksTogetherOverride() {
-        return this.openAllBlocksTogether.orElseGet(() -> OpenTogether.CONFIG.get(CommonConfig.class)
-                .openAllBlocksTogether());
-    }
-
-    @Override
-    public boolean openDoubleDoorsTogether() {
-        return this.openDoubleDoorsTogether && this.openAllBlocksTogetherOverride();
+    SharedState(Optional<Boolean> allBlocks, boolean doubleDoors, boolean doubleFenceGates, boolean doubleTrapdoors) {
+        this.allBlocks = allBlocks;
+        this.doubleDoors = doubleDoors;
+        this.doubleFenceGates = doubleFenceGates;
+        this.doubleTrapdoors = doubleTrapdoors;
     }
 
     @Override
-    public boolean openDoubleFenceGatesTogether() {
-        return this.openDoubleFenceGatesTogether && this.openAllBlocksTogetherOverride();
+    boolean getDoubleDoorsOption() {
+        return this.doubleDoors;
     }
 
     @Override
-    public boolean openDoubleTrapdoorsTogether() {
-        return this.openDoubleTrapdoorsTogether && this.openAllBlocksTogetherOverride();
+    boolean getDoubleFenceGatesOption() {
+        return this.doubleFenceGates;
     }
 
-    public static SharedState copyOf(SharedConfig sharedConfig) {
-        return switch (sharedConfig) {
-            case SharedState sharedState -> sharedState;
-            case CommonConfig commonConfig -> new SharedState(commonConfig.doubleDoors.openTogether,
-                    commonConfig.doubleFenceGates.openTogether,
-                    commonConfig.doubleTrapdoors.openTogether);
-        };
+    @Override
+    boolean getDoubleTrapdoorsOption() {
+        return this.doubleTrapdoors;
+    }
+
+    @Override
+    public boolean getAllBlocksOption() {
+        return this.allBlocks.orElseGet(() -> OpenTogether.CONFIG.get(CommonConfig.class).getAllBlocksOption());
+    }
+
+    @Override
+    public SharedConfig setAllBlocks(boolean allBlocks) {
+        return new SharedState(Optional.of(allBlocks),
+                this.getDoubleDoorsOption(),
+                this.getDoubleFenceGatesOption(),
+                this.getDoubleTrapdoorsOption());
     }
 }

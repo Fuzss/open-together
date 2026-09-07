@@ -13,6 +13,9 @@ import fuzs.puzzleslib.common.api.network.v4.NetworkingHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.MultiPlayerGameMode;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.Connection;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 
@@ -33,9 +36,11 @@ public class OpenTogetherClient implements ClientModConstructor {
 
     private static void registerEventHandlers() {
         InteractionInputEvents.USE.register(BlockInteractionHandler::onUseInteraction);
-        ClientPlayerNetworkEvents.LEAVE.register((player, multiPlayerGameMode, connection) -> {
-            OpenTogether.CONFIG.get(CommonConfig.class).resetSharedConfig();
-        });
+        ClientPlayerNetworkEvents.LEAVE.register(OpenTogetherClient::onPlayerLeave);
+    }
+
+    private static void onPlayerLeave(LocalPlayer player, MultiPlayerGameMode multiPlayerGameMode, Connection connection) {
+        OpenTogether.CONFIG.get(CommonConfig.class).resetSharedConfig();
     }
 
     @Override
@@ -67,7 +72,7 @@ public class OpenTogetherClient implements ClientModConstructor {
     private static Component pickFeedbackComponent(boolean mayUseToggleKeybind) {
         if (mayUseToggleKeybind) {
             return Component.translatable(TOGGLE_OPENING_BLOCKS_TOGETHER_STATUS_TRANSLATION_KEY,
-                    OpenTogether.CONFIG.get(CommonConfig.class).toggleOpenBlocksTogether() ? ON_COMPONENT :
+                    OpenTogether.CONFIG.get(CommonConfig.class).toggleAllBlocks() ? ON_COMPONENT :
                             OFF_COMPONENT);
         } else {
             return Component.translatable(TOGGLE_OPENING_BLOCKS_TOGETHER_UNAVAILABLE_TRANSLATION_KEY);

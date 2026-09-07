@@ -59,7 +59,7 @@ public class BlockInteractionHandler {
     }
 
     private static boolean supportsCurrentEnvironment() {
-        if (!OpenTogether.CONFIG.get(CommonConfig.class).openAllBlocksTogether()) {
+        if (!OpenTogether.CONFIG.get(CommonConfig.class).getAllBlocksOption()) {
             return false;
         } else if (NetworkingHelper.isModPresentServerside(OpenTogether.MOD_ID)) {
             return false;
