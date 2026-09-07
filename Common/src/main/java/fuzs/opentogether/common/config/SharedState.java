@@ -54,9 +54,9 @@ public record SharedState(Optional<Boolean> openAllBlocksTogether,
     public static SharedState copyOf(SharedConfig sharedConfig) {
         return switch (sharedConfig) {
             case SharedState sharedState -> sharedState;
-            case CommonConfig commonConfig -> new SharedState(commonConfig.openDoubleDoorsTogether,
-                    commonConfig.openDoubleFenceGatesTogether,
-                    commonConfig.openDoubleTrapdoorsTogether);
+            case CommonConfig commonConfig -> new SharedState(commonConfig.doubleDoors.openTogether,
+                    commonConfig.doubleFenceGates.openTogether,
+                    commonConfig.doubleTrapdoors.openTogether);
         };
     }
 }

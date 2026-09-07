@@ -70,7 +70,7 @@ public class DoubleDoorLogic implements DoubleBlockLogic {
 
     @Override
     public ConfigDataSet<Block> getBlockDataSet(CommonConfig commonConfig) {
-        return commonConfig.doubleDoors;
+        return commonConfig.doubleDoors.validBlocks;
     }
 
     @Override

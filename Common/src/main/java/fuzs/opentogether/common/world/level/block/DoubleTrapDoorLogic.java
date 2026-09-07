@@ -57,7 +57,7 @@ public class DoubleTrapDoorLogic extends AbstractDoubleBlockLogic {
 
     @Override
     public ConfigDataSet<Block> getBlockDataSet(CommonConfig commonConfig) {
-        return commonConfig.doubleTrapdoors;
+        return commonConfig.doubleTrapdoors.validBlocks;
     }
 
     @Override

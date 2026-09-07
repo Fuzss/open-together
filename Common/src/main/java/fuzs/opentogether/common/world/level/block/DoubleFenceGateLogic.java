@@ -43,7 +43,7 @@ public class DoubleFenceGateLogic extends AbstractDoubleBlockLogic {
 
     @Override
     public ConfigDataSet<Block> getBlockDataSet(CommonConfig commonConfig) {
-        return commonConfig.doubleFenceGates;
+        return commonConfig.doubleFenceGates.validBlocks;
     }
 
     @Override

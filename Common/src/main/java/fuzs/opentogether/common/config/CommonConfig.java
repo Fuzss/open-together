@@ -8,6 +8,7 @@ import fuzs.puzzleslib.common.api.config.v3.serialization.ConfigDataSet;
 import fuzs.puzzleslib.common.api.config.v3.serialization.KeyedValueProvider;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
@@ -15,47 +16,24 @@ import java.util.List;
 
 public final class CommonConfig implements ConfigCore, SharedConfig {
     private SharedConfig sharedConfig = this;
-    @Config(description = "Can double doors open together.", worldRestart = true)
-    boolean openDoubleDoorsTogether = true;
-    @Config(description = "Can double fence gates open together.", worldRestart = true)
-    boolean openDoubleFenceGatesTogether = true;
-    @Config(description = "Can double trapdoors open together.", worldRestart = true)
-    boolean openDoubleTrapdoorsTogether = true;
-    @Config(name = "double_doors", description = "Blocks that may act as double doors and can open together.")
-    List<String> doubleDoorsRaw = KeyedValueProvider.<Block>tags()
-            .addTag(BlockTags.DOORS)
-            .addTag(ModRegistry.DOUBLE_DOORS_BLOCK_TAG)
-            .asStringList();
-    @Config(name = "double_trapdoors", description = "Blocks that may act as double trapdoors and can open together.")
-    List<String> doubleTrapdoorsRaw = KeyedValueProvider.<Block>tags()
-            .addTag(BlockTags.TRAPDOORS)
-            .addTag(ModRegistry.DOUBLE_TRAPDOORS_BLOCK_TAG)
-            .asStringList();
-    @Config(name = "double_fence_gates",
-            description = "Blocks that may act as double fence gates and can open together.")
-    List<String> doubleFenceGatesRaw = KeyedValueProvider.<Block>tags()
-            .addTag(BlockTags.FENCE_GATES)
-            .addTag(ModRegistry.DOUBLE_FENCE_GATES_BLOCK_TAG)
-            .asStringList();
+    @Config(description = "Can double doors open together.")
+    public final DoubleBlockConfig doubleDoors = new DoubleBlockConfig(BlockTags.DOORS,
+            ModRegistry.DOUBLE_DOORS_BLOCK_TAG);
+    @Config(description = "Can double fence gates open together.")
+    public final DoubleBlockConfig doubleFenceGates = new DoubleBlockConfig(BlockTags.FENCE_GATES,
+            ModRegistry.DOUBLE_FENCE_GATES_BLOCK_TAG);
+    @Config(description = "Can double trapdoors open together.")
+    public final DoubleBlockConfig doubleTrapdoors = new DoubleBlockConfig(BlockTags.TRAPDOORS,
+            ModRegistry.DOUBLE_TRAPDOORS_BLOCK_TAG);
 
     private ModConfigSpec.ConfigValue<Boolean> openAllBlocksTogetherValue;
-    public ConfigDataSet<Block> doubleDoors = ConfigDataSet.from(Registries.BLOCK);
-    public ConfigDataSet<Block> doubleTrapdoors = ConfigDataSet.from(Registries.BLOCK);
-    public ConfigDataSet<Block> doubleFenceGates = ConfigDataSet.from(Registries.BLOCK);
 
     @Override
     public void addToBuilder(ModConfigSpec.Builder builder, ValueCallback callback) {
         this.openAllBlocksTogetherValue = builder.comment(
-                "Use blocks that can be opened from interacting or using redstone together with other blocks of the same kind surrounding them.",
-                "E.g. this allows double doors to be opened together via all means supported by vanilla.",
-                this.getEffectiveEnvironmentLine()).define("open_all_blocks_together", true);
-    }
-
-    @Override
-    public void afterConfigReload() {
-        this.doubleDoors = ConfigDataSet.from(Registries.BLOCK, this.doubleDoorsRaw);
-        this.doubleTrapdoors = ConfigDataSet.from(Registries.BLOCK, this.doubleTrapdoorsRaw);
-        this.doubleFenceGates = ConfigDataSet.from(Registries.BLOCK, this.doubleFenceGatesRaw);
+                        "Use blocks that can be opened from interacting or using redstone together with other blocks of the same kind surrounding them.",
+                        "E.g. this allows double doors to be opened together via all means supported by vanilla.")
+                .define("open_all_blocks_together", true);
     }
 
     public SharedConfig getSharedConfig(boolean isClientSide) {
@@ -82,20 +60,37 @@ public final class CommonConfig implements ConfigCore, SharedConfig {
 
     @Override
     public boolean openDoubleDoorsTogether() {
-        return this.openDoubleDoorsTogether && this.openAllBlocksTogether();
+        return this.doubleDoors.openTogether && this.openAllBlocksTogether();
     }
 
     @Override
     public boolean openDoubleFenceGatesTogether() {
-        return this.openDoubleFenceGatesTogether && this.openAllBlocksTogether();
+        return this.doubleFenceGates.openTogether && this.openAllBlocksTogether();
     }
 
     @Override
     public boolean openDoubleTrapdoorsTogether() {
-        return this.openDoubleTrapdoorsTogether && this.openAllBlocksTogether();
+        return this.doubleTrapdoors.openTogether && this.openAllBlocksTogether();
     }
 
-    String getEffectiveEnvironmentLine() {
-        return "This option only takes effect either in singleplayer or globally for all players on a multiplayer server.";
+    public static class DoubleBlockConfig implements ConfigCore {
+        @Config(description = "Can double blocks open together.", worldRestart = true)
+        boolean openTogether = true;
+        @Config(name = "valid_blocks", description = "Blocks that may act as double blocks and can open together.")
+        List<String> validBlocksRaw;
+
+        public ConfigDataSet<Block> validBlocks = ConfigDataSet.from(Registries.BLOCK);
+
+        public DoubleBlockConfig(TagKey<Block> vanillaBlocks, TagKey<Block> allBlocks) {
+            this.validBlocksRaw = KeyedValueProvider.<Block>tags()
+                    .addTag(vanillaBlocks)
+                    .addTag(allBlocks)
+                    .asStringList();
+        }
+
+        @Override
+        public void afterConfigReload() {
+            this.validBlocks = ConfigDataSet.from(Registries.BLOCK, this.validBlocksRaw);
+        }
     }
 }
