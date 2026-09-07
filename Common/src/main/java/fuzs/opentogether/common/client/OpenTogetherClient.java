@@ -2,11 +2,10 @@ package fuzs.opentogether.common.client;
 
 import fuzs.opentogether.common.OpenTogether;
 import fuzs.opentogether.common.client.handler.BlockInteractionHandler;
-import fuzs.opentogether.common.config.ClientConfig;
-import fuzs.opentogether.common.config.ServerConfig;
-import fuzs.opentogether.common.config.SharedConfig;
+import fuzs.opentogether.common.config.CommonConfig;
 import fuzs.puzzleslib.common.api.client.core.v1.ClientModConstructor;
 import fuzs.puzzleslib.common.api.client.core.v1.context.KeyMappingsContext;
+import fuzs.puzzleslib.common.api.client.event.v1.entity.player.ClientPlayerNetworkEvents;
 import fuzs.puzzleslib.common.api.client.event.v1.entity.player.InteractionInputEvents;
 import fuzs.puzzleslib.common.api.client.key.v1.KeyActivationHandler;
 import fuzs.puzzleslib.common.api.client.key.v1.KeyMappingHelper;
@@ -16,7 +15,6 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import org.jspecify.annotations.Nullable;
 
 public class OpenTogetherClient implements ClientModConstructor {
     public static final KeyMapping TOGGLE_OPENING_BLOCKS_TOGETHER_KEY_MAPPING = KeyMappingHelper.registerUnboundKeyMapping(
@@ -35,14 +33,17 @@ public class OpenTogetherClient implements ClientModConstructor {
 
     private static void registerEventHandlers() {
         InteractionInputEvents.USE.register(BlockInteractionHandler::onUseInteraction);
+        ClientPlayerNetworkEvents.LEAVE.register((player, multiPlayerGameMode, connection) -> {
+            OpenTogether.CONFIG.get(CommonConfig.class).resetSharedConfig();
+        });
     }
 
     @Override
     public void onRegisterKeyMappings(KeyMappingsContext context) {
         context.registerKeyMapping(TOGGLE_OPENING_BLOCKS_TOGETHER_KEY_MAPPING,
                 KeyActivationHandler.forGame((Minecraft minecraft) -> {
-                    SharedConfig sharedConfig = chooseSharedConfig(minecraft);
-                    Component component = chooseFeedbackComponent(sharedConfig);
+                    boolean mayUseToggleKeybind = mayUseToggleKeybind(minecraft);
+                    Component component = pickFeedbackComponent(mayUseToggleKeybind);
                     minecraft.gui.hud.setOverlayMessage(component, false);
                 }));
     }
@@ -50,20 +51,24 @@ public class OpenTogetherClient implements ClientModConstructor {
     /**
      * @see fuzs.reachbehind.handler.AbstractMenuProviderInteraction
      */
-    private static @Nullable SharedConfig chooseSharedConfig(Minecraft minecraft) {
+    private static boolean mayUseToggleKeybind(Minecraft minecraft) {
         if (!NetworkingHelper.isModPresentServerside(OpenTogether.MOD_ID)) {
-            return OpenTogether.CONFIG.get(ClientConfig.class);
+            // The mod is only installed client side, we are using client-only mode which mimics player interactions.
+            return true;
         } else if (minecraft.isLocalServer()) {
-            return OpenTogether.CONFIG.get(ServerConfig.class);
+            // The mod is running in singleplayer, we have full control over both the client & server.
+            return true;
         } else {
-            return null;
+            // The mod is installed on the multiplayer server, control is out of our hands.
+            return false;
         }
     }
 
-    private static Component chooseFeedbackComponent(SharedConfig sharedConfig) {
-        if (sharedConfig != null) {
+    private static Component pickFeedbackComponent(boolean mayUseToggleKeybind) {
+        if (mayUseToggleKeybind) {
             return Component.translatable(TOGGLE_OPENING_BLOCKS_TOGETHER_STATUS_TRANSLATION_KEY,
-                    sharedConfig.flipOpenBlocksTogether() ? ON_COMPONENT : OFF_COMPONENT);
+                    OpenTogether.CONFIG.get(CommonConfig.class).toggleOpenBlocksTogether() ? ON_COMPONENT :
+                            OFF_COMPONENT);
         } else {
             return Component.translatable(TOGGLE_OPENING_BLOCKS_TOGETHER_UNAVAILABLE_TRANSLATION_KEY);
         }

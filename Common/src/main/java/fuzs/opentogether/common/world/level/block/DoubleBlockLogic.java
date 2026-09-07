@@ -1,12 +1,13 @@
-package fuzs.opentogether.common.util;
+package fuzs.opentogether.common.world.level.block;
 
 import fuzs.opentogether.common.OpenTogether;
+import fuzs.opentogether.common.config.CommonConfig;
 import fuzs.opentogether.common.config.ServerConfig;
 import fuzs.opentogether.common.config.SharedConfig;
+import fuzs.puzzleslib.common.api.config.v3.serialization.ConfigDataSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
@@ -23,9 +24,7 @@ import java.util.function.Predicate;
 
 public interface DoubleBlockLogic {
     default boolean isEnabledGlobally(boolean isClientSide) {
-        return OpenTogether.CONFIG.getHolder(ServerConfig.class).isAvailable()
-                && OpenTogether.CONFIG.get(ServerConfig.class).supportsCurrentEnvironment(isClientSide)
-                && this.isEnabled(OpenTogether.CONFIG.get(ServerConfig.class));
+        return this.isEnabled(OpenTogether.CONFIG.get(CommonConfig.class).getSharedConfig(isClientSide));
     }
 
     boolean isEnabled(SharedConfig sharedConfig);
@@ -90,11 +89,11 @@ public interface DoubleBlockLogic {
 
     Class<?> getBlockType();
 
-    TagKey<Block> getBlockTag();
-
     default boolean isValidDoubleBlock(BlockState blockState) {
-        return blockState.is(this.getBlockTag());
+        return this.getBlockDataSet(OpenTogether.CONFIG.get(CommonConfig.class)).contains(blockState.getBlock());
     }
+
+    ConfigDataSet<Block> getBlockDataSet(CommonConfig commonConfig);
 
     boolean isDoubleBlock(BlockState blockState, BlockState neighborBlockState, Direction.@Nullable Axis axis);
 

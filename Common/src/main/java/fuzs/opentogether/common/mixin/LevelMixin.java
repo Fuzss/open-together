@@ -2,7 +2,7 @@ package fuzs.opentogether.common.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import fuzs.opentogether.common.OpenTogether;
-import fuzs.opentogether.common.util.DoubleBlockLogic;
+import fuzs.opentogether.common.world.level.block.DoubleBlockLogic;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;

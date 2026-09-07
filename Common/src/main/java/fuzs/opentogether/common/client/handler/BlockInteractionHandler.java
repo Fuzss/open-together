@@ -1,12 +1,13 @@
 package fuzs.opentogether.common.client.handler;
 
 import fuzs.opentogether.common.OpenTogether;
-import fuzs.opentogether.common.client.util.ClientDoubleBlockLogic;
-import fuzs.opentogether.common.client.util.ClientDoubleDoorLogic;
-import fuzs.opentogether.common.client.util.ClientDoubleFenceGateLogic;
-import fuzs.opentogether.common.client.util.ClientDoubleTrapDoorLogic;
-import fuzs.opentogether.common.config.ClientConfig;
+import fuzs.opentogether.common.client.world.level.block.ClientDoubleDoorLogic;
+import fuzs.opentogether.common.client.world.level.block.ClientDoubleFenceGateLogic;
+import fuzs.opentogether.common.client.world.level.block.ClientDoubleTrapDoorLogic;
+import fuzs.opentogether.common.config.CommonConfig;
+import fuzs.opentogether.common.world.level.block.DoubleBlockLogic;
 import fuzs.puzzleslib.common.api.event.v1.core.EventResult;
+import fuzs.puzzleslib.common.api.network.v4.NetworkingHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
@@ -23,13 +24,13 @@ import java.util.Collection;
 import java.util.List;
 
 public class BlockInteractionHandler {
-    private static final Collection<ClientDoubleBlockLogic> CLIENT_DOUBLE_BLOCK_LOGIC = List.of(ClientDoubleDoorLogic.INSTANCE,
+    private static final Collection<DoubleBlockLogic> CLIENT_DOUBLE_BLOCK_LOGIC = List.of(ClientDoubleDoorLogic.INSTANCE,
             ClientDoubleFenceGateLogic.INSTANCE,
             ClientDoubleTrapDoorLogic.INSTANCE);
     private static boolean isProcessingInteraction;
 
     public static EventResult onUseInteraction(Minecraft minecraft, LocalPlayer player, InteractionHand interactionHand, HitResult hitResult) {
-        if (!OpenTogether.CONFIG.get(ClientConfig.class).supportsCurrentEnvironment(true)) {
+        if (!supportsCurrentEnvironment()) {
             return EventResult.PASS;
         }
 
@@ -39,7 +40,7 @@ public class BlockInteractionHandler {
                 BlockPos blockPos = blockHitResult.getBlockPos();
                 BlockState blockState = minecraft.level.getBlockState(blockPos);
                 isProcessingInteraction = true;
-                for (ClientDoubleBlockLogic doubleBlockLogic : CLIENT_DOUBLE_BLOCK_LOGIC) {
+                for (DoubleBlockLogic doubleBlockLogic : CLIENT_DOUBLE_BLOCK_LOGIC) {
                     if (processInteraction(minecraft,
                             doubleBlockLogic,
                             blockPos,
@@ -57,7 +58,17 @@ public class BlockInteractionHandler {
         return EventResult.PASS;
     }
 
-    private static boolean processInteraction(Minecraft minecraft, ClientDoubleBlockLogic doubleBlockLogic, BlockPos blockPos, BlockState blockState, Direction direction) {
+    private static boolean supportsCurrentEnvironment() {
+        if (!OpenTogether.CONFIG.get(CommonConfig.class).openAllBlocksTogether()) {
+            return false;
+        } else if (NetworkingHelper.isModPresentServerside(OpenTogether.MOD_ID)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    private static boolean processInteraction(Minecraft minecraft, DoubleBlockLogic doubleBlockLogic, BlockPos blockPos, BlockState blockState, Direction direction) {
         if (doubleBlockLogic.getBlockType().isInstance(blockState.getBlock())) {
             Collection<BlockPos> neighborBlockPositions = doubleBlockLogic.getValidDoubleNeighbors(minecraft.level,
                     blockPos,

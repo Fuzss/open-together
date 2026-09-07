@@ -1,10 +1,6 @@
 package fuzs.opentogether.common.config;
 
-public interface SharedConfig {
-    boolean supportsCurrentEnvironment(boolean isClientSide);
-
-    boolean flipOpenBlocksTogether();
-
+public sealed interface SharedConfig permits CommonConfig, SharedState {
     boolean openDoubleDoorsTogether();
 
     boolean openDoubleFenceGatesTogether();
