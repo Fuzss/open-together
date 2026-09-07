@@ -1,7 +1,7 @@
 package fuzs.opentogether.common.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import fuzs.opentogether.common.util.DoubleTrapDoorLogic;
+import fuzs.opentogether.common.world.level.block.DoubleTrapDoorLogic;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;

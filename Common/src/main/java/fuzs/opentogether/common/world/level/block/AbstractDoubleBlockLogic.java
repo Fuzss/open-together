@@ -1,4 +1,4 @@
-package fuzs.opentogether.common.util;
+package fuzs.opentogether.common.world.level.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;

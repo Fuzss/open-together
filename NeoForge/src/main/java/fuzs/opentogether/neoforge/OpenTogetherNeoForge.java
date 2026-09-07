@@ -1,7 +1,7 @@
 package fuzs.opentogether.neoforge;
 
 import fuzs.opentogether.common.OpenTogether;
-import fuzs.opentogether.common.data.tags.ModBlockTagProvider;
+import fuzs.opentogether.common.data.tags.ModBlockTagsProvider;
 import fuzs.puzzleslib.common.api.core.v1.ModConstructor;
 import fuzs.puzzleslib.common.api.core.v1.ModLoaderEnvironment;
 import fuzs.puzzleslib.neoforge.api.data.v2.core.DataProviderHelper;
@@ -17,6 +17,6 @@ public class OpenTogetherNeoForge {
             ModConstructor.construct(OpenTogether.MOD_ID, OpenTogether::new);
         }
 
-        DataProviderHelper.registerDataProviders(OpenTogether.MOD_ID, ModBlockTagProvider::new);
+        DataProviderHelper.registerDataProviders(OpenTogether.MOD_ID, ModBlockTagsProvider::new);
     }
 }

@@ -1,12 +1,12 @@
-package fuzs.opentogether.common.util;
+package fuzs.opentogether.common.world.level.block;
 
+import fuzs.opentogether.common.config.CommonConfig;
 import fuzs.opentogether.common.config.ServerConfig;
 import fuzs.opentogether.common.config.SharedConfig;
-import fuzs.opentogether.common.init.ModRegistry;
+import fuzs.puzzleslib.common.api.config.v3.serialization.ConfigDataSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DoorBlock;
@@ -69,8 +69,8 @@ public class DoubleDoorLogic implements DoubleBlockLogic {
     }
 
     @Override
-    public TagKey<Block> getBlockTag() {
-        return ModRegistry.DOUBLE_DOORS_BLOCK_TAG;
+    public ConfigDataSet<Block> getBlockDataSet(CommonConfig commonConfig) {
+        return commonConfig.doubleDoors.validBlocks;
     }
 
     @Override
@@ -84,6 +84,6 @@ public class DoubleDoorLogic implements DoubleBlockLogic {
 
     @Override
     public int getRecursiveUpdateLimit(ServerConfig serverConfig) {
-        return serverConfig.doubleDoorsUpdateLimit;
+        return serverConfig.doorsUpdateLimit;
     }
 }
