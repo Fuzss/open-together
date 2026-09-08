@@ -32,7 +32,7 @@ public interface DoubleBlockLogic {
 
     default @Nullable BlockState updateShape(LevelReader level, BlockState blockState, BlockState neighborBlockState, Direction direction) {
         if (this.isEnabledGlobally(level.isClientSide())) {
-            if (this.isNeighborDirection(blockState, direction.getUnitVec3i()) && this.isValidDoubleBlock(blockState,
+            if (this.isNeighborDirection(blockState, direction.getNormal()) && this.isValidDoubleBlock(blockState,
                     neighborBlockState,
                     direction.getAxis())) {
                 return this.copyBlockState(blockState, neighborBlockState);

@@ -36,7 +36,7 @@ public class OpenTogetherClient implements ClientModConstructor {
 
     private static void registerEventHandlers() {
         InteractionInputEvents.USE.register(BlockInteractionHandler::onUseInteraction);
-        ClientPlayerNetworkEvents.LEAVE.register(OpenTogetherClient::onPlayerLeave);
+        ClientPlayerNetworkEvents.LOGGED_OUT.register(OpenTogetherClient::onPlayerLeave);
     }
 
     private static void onPlayerLeave(LocalPlayer player, MultiPlayerGameMode multiPlayerGameMode, Connection connection) {
@@ -49,7 +49,7 @@ public class OpenTogetherClient implements ClientModConstructor {
                 KeyActivationHandler.forGame((Minecraft minecraft) -> {
                     boolean mayUseToggleKeybind = mayUseToggleKeybind(minecraft);
                     Component component = pickFeedbackComponent(mayUseToggleKeybind);
-                    minecraft.gui.hud.setOverlayMessage(component, false);
+                    minecraft.gui.setOverlayMessage(component, false);
                 }));
     }
 
@@ -72,8 +72,7 @@ public class OpenTogetherClient implements ClientModConstructor {
     private static Component pickFeedbackComponent(boolean mayUseToggleKeybind) {
         if (mayUseToggleKeybind) {
             return Component.translatable(TOGGLE_OPENING_BLOCKS_TOGETHER_STATUS_TRANSLATION_KEY,
-                    OpenTogether.CONFIG.get(CommonConfig.class).toggleAllBlocks() ? ON_COMPONENT :
-                            OFF_COMPONENT);
+                    OpenTogether.CONFIG.get(CommonConfig.class).toggleAllBlocks() ? ON_COMPONENT : OFF_COMPONENT);
         } else {
             return Component.translatable(TOGGLE_OPENING_BLOCKS_TOGETHER_UNAVAILABLE_TRANSLATION_KEY);
         }

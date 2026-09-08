@@ -60,7 +60,7 @@ public class DoubleDoorLogic implements DoubleBlockLogic {
     private Vec3i getNeighborNormal(BlockState blockState) {
         Direction direction = blockState.getValue(DoorBlock.FACING);
         return (blockState.getValue(DoorBlock.HINGE) == DoorHingeSide.LEFT ? direction.getClockWise() :
-                direction.getCounterClockWise()).getUnitVec3i();
+                direction.getCounterClockWise()).getNormal();
     }
 
     @Override
