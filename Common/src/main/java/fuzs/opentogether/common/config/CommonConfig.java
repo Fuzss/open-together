@@ -1,11 +1,11 @@
 package fuzs.opentogether.common.config;
 
 import fuzs.opentogether.common.init.ModRegistry;
-import fuzs.puzzleslib.common.api.config.v3.Config;
-import fuzs.puzzleslib.common.api.config.v3.ConfigCore;
-import fuzs.puzzleslib.common.api.config.v3.ValueCallback;
-import fuzs.puzzleslib.common.api.config.v3.serialization.ConfigDataSet;
-import fuzs.puzzleslib.common.api.config.v3.serialization.KeyedValueProvider;
+import fuzs.puzzleslib.api.config.v3.Config;
+import fuzs.puzzleslib.api.config.v3.ConfigCore;
+import fuzs.puzzleslib.api.config.v3.ValueCallback;
+import fuzs.puzzleslib.api.config.v3.serialization.ConfigDataSet;
+import fuzs.puzzleslib.api.config.v3.serialization.KeyedValueProvider;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;

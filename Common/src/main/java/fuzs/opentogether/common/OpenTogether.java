@@ -9,11 +9,11 @@ import fuzs.opentogether.common.world.level.block.DoubleBlockLogic;
 import fuzs.opentogether.common.world.level.block.DoubleDoorLogic;
 import fuzs.opentogether.common.world.level.block.DoubleFenceGateLogic;
 import fuzs.opentogether.common.world.level.block.DoubleTrapDoorLogic;
-import fuzs.puzzleslib.common.api.config.v3.ConfigHolder;
-import fuzs.puzzleslib.common.api.core.v1.ModConstructor;
-import fuzs.puzzleslib.common.api.core.v1.context.PayloadTypesContext;
-import fuzs.puzzleslib.common.api.event.v1.server.RegisterConfigurationTasksCallback;
-import net.minecraft.resources.Identifier;
+import fuzs.puzzleslib.api.config.v3.ConfigHolder;
+import fuzs.puzzleslib.api.core.v1.ModConstructor;
+import fuzs.puzzleslib.api.core.v1.context.PayloadTypesContext;
+import fuzs.puzzleslib.api.event.v1.server.RegisterConfigurationTasksCallback;
+import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +49,7 @@ public class OpenTogether implements ModConstructor {
                 ClientboundSharedConfigMessage.STREAM_CODEC);
     }
 
-    public static Identifier id(String path) {
-        return Identifier.fromNamespaceAndPath(MOD_ID, path);
+    public static ResourceLocation id(String path) {
+        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
     }
 }

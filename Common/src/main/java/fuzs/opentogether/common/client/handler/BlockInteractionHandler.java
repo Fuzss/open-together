@@ -6,8 +6,8 @@ import fuzs.opentogether.common.client.world.level.block.ClientDoubleFenceGateLo
 import fuzs.opentogether.common.client.world.level.block.ClientDoubleTrapDoorLogic;
 import fuzs.opentogether.common.config.CommonConfig;
 import fuzs.opentogether.common.world.level.block.DoubleBlockLogic;
-import fuzs.puzzleslib.common.api.event.v1.core.EventResult;
-import fuzs.puzzleslib.common.api.network.v4.NetworkingHelper;
+import fuzs.puzzleslib.api.event.v1.core.EventResult;
+import fuzs.puzzleslib.api.network.v4.NetworkingHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;

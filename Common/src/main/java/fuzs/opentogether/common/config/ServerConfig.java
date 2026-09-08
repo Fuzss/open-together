@@ -1,7 +1,7 @@
 package fuzs.opentogether.common.config;
 
-import fuzs.puzzleslib.common.api.config.v3.Config;
-import fuzs.puzzleslib.common.api.config.v3.ConfigCore;
+import fuzs.puzzleslib.api.config.v3.Config;
+import fuzs.puzzleslib.api.config.v3.ConfigCore;
 
 public class ServerConfig implements ConfigCore {
     @Config(description = "The amount of recursive block updates that can be caused from opening a single door.")

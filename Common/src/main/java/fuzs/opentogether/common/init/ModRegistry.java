@@ -1,7 +1,7 @@
 package fuzs.opentogether.common.init;
 
 import fuzs.opentogether.common.OpenTogether;
-import fuzs.puzzleslib.common.api.init.v3.tags.TagFactory;
+import fuzs.puzzleslib.api.init.v3.tags.TagFactory;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 

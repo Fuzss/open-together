@@ -3,7 +3,7 @@ package fuzs.opentogether.neoforge.client;
 import fuzs.opentogether.common.OpenTogether;
 import fuzs.opentogether.common.client.OpenTogetherClient;
 import fuzs.opentogether.common.data.client.ModLanguageProvider;
-import fuzs.puzzleslib.common.api.client.core.v1.ClientModConstructor;
+import fuzs.puzzleslib.api.client.core.v1.ClientModConstructor;
 import fuzs.puzzleslib.neoforge.api.data.v2.core.DataProviderHelper;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.common.Mod;

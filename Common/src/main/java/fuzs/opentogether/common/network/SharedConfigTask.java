@@ -1,7 +1,7 @@
 package fuzs.opentogether.common.network;
 
 import fuzs.opentogether.common.OpenTogether;
-import fuzs.puzzleslib.common.api.network.v4.NetworkingHelper;
+import fuzs.puzzleslib.api.network.v4.NetworkingHelper;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ConfigurationTask;
