@@ -88,7 +88,7 @@ public class CommonConfig implements ConfigCore, GlobalSharedConfig {
         public ConfigDataSet<Block> validBlocks = ConfigDataSet.from(Registries.BLOCK);
 
         public DoubleBlockConfig(TagKey<Block> vanillaBlocks, TagKey<Block> allBlocks) {
-            this.validBlocksRaw = KeyedValueProvider.<Block>tags()
+            this.validBlocksRaw = KeyedValueProvider.<Block>tags(Registries.BLOCK)
                     .addTag(vanillaBlocks)
                     .addTag(allBlocks)
                     .asStringList();
