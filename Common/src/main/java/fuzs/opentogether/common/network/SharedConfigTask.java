@@ -22,7 +22,7 @@ public record SharedConfigTask(ServerConfigurationPacketListenerImpl listener) i
     @Override
     public void start(Consumer<Packet<?>> connection) {
         connection.accept(ClientboundSharedConfigMessage.of().toPacket());
-        this.listener().finishCurrentTask(this.type());
+        NetworkingHelper.finishConfigurationTask(this.listener(), this.type());
     }
 
     @Override
