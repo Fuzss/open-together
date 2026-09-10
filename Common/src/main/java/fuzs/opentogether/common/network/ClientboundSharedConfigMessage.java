@@ -11,11 +11,11 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
-public record ClientboundSharedConfigMessage(boolean openAllBlocksTogether,
+public record ClientboundSharedConfigMessage(boolean openAnyBlocksTogether,
                                              GlobalSharedConfig sharedConfig) implements ClientboundConfigurationMessage {
     public static final StreamCodec<ByteBuf, ClientboundSharedConfigMessage> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.BOOL,
-            ClientboundSharedConfigMessage::openAllBlocksTogether,
+            ClientboundSharedConfigMessage::openAnyBlocksTogether,
             SharedState.STREAM_CODEC,
             ClientboundSharedConfigMessage::sharedConfig,
             ClientboundSharedConfigMessage::new);
@@ -25,7 +25,7 @@ public record ClientboundSharedConfigMessage(boolean openAllBlocksTogether,
     }
 
     public static ClientboundSharedConfigMessage of(GlobalSharedConfig sharedConfig) {
-        return new ClientboundSharedConfigMessage(sharedConfig.getAllBlocksOption(), sharedConfig.plainCopy());
+        return new ClientboundSharedConfigMessage(sharedConfig.getAnyBlocksOption(), sharedConfig.plainCopy());
     }
 
     @Override
@@ -40,7 +40,7 @@ public record ClientboundSharedConfigMessage(boolean openAllBlocksTogether,
             private SharedConfig fetchSharedConfig(boolean isLocalServer) {
                 return isLocalServer ? ClientboundSharedConfigMessage.this.sharedConfig() :
                         ClientboundSharedConfigMessage.this.sharedConfig()
-                                .setAllBlocks(ClientboundSharedConfigMessage.this.openAllBlocksTogether());
+                                .setAnyBlocks(ClientboundSharedConfigMessage.this.openAnyBlocksTogether());
             }
         };
     }

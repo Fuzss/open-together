@@ -72,7 +72,8 @@ public class OpenTogetherClient implements ClientModConstructor {
     private static Component pickFeedbackComponent(boolean mayUseToggleKeybind) {
         if (mayUseToggleKeybind) {
             return Component.translatable(TOGGLE_OPENING_BLOCKS_TOGETHER_STATUS_TRANSLATION_KEY,
-                    OpenTogether.CONFIG.get(CommonConfig.class).toggleAllBlocks() ? ON_COMPONENT : OFF_COMPONENT);
+                    OpenTogether.CONFIG.get(CommonConfig.class).toggleAnyBlocks() ? ON_COMPONENT :
+                            OFF_COMPONENT);
         } else {
             return Component.translatable(TOGGLE_OPENING_BLOCKS_TOGETHER_UNAVAILABLE_TRANSLATION_KEY);
         }

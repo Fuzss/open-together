@@ -1,13 +1,11 @@
 package fuzs.opentogether.common.world.level.block;
 
-import fuzs.opentogether.common.config.CommonConfig;
 import fuzs.opentogether.common.config.ServerConfig;
 import fuzs.opentogether.common.config.SharedConfig;
-import fuzs.puzzleslib.api.config.v3.serialization.ConfigDataSet;
+import fuzs.opentogether.common.init.ModRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.FenceGateBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
@@ -42,8 +40,8 @@ public class DoubleFenceGateLogic extends AbstractDoubleBlockLogic {
     }
 
     @Override
-    public ConfigDataSet<Block> getBlockDataSet(CommonConfig commonConfig) {
-        return commonConfig.doubleFenceGates.validBlocks;
+    public boolean isValidDoubleBlock(BlockState blockState) {
+        return blockState.is(ModRegistry.DOUBLE_FENCE_GATES_BLOCK_TAG);
     }
 
     @Override

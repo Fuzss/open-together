@@ -4,13 +4,11 @@ import fuzs.opentogether.common.OpenTogether;
 import fuzs.opentogether.common.config.CommonConfig;
 import fuzs.opentogether.common.config.ServerConfig;
 import fuzs.opentogether.common.config.SharedConfig;
-import fuzs.puzzleslib.api.config.v3.serialization.ConfigDataSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.jetbrains.annotations.Nullable;
@@ -90,11 +88,7 @@ public interface DoubleBlockLogic {
 
     Class<?> getBlockType();
 
-    default boolean isValidDoubleBlock(BlockState blockState) {
-        return this.getBlockDataSet(OpenTogether.CONFIG.get(CommonConfig.class)).contains(blockState.getBlock());
-    }
-
-    ConfigDataSet<Block> getBlockDataSet(CommonConfig commonConfig);
+    boolean isValidDoubleBlock(BlockState blockState);
 
     boolean isDoubleBlock(BlockState blockState, BlockState neighborBlockState, Direction.@Nullable Axis axis);
 

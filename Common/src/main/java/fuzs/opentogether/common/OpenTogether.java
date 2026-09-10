@@ -1,5 +1,6 @@
 package fuzs.opentogether.common;
 
+import fuzs.opentogether.common.config.ClientConfig;
 import fuzs.opentogether.common.config.CommonConfig;
 import fuzs.opentogether.common.config.ServerConfig;
 import fuzs.opentogether.common.init.ModRegistry;
@@ -26,6 +27,7 @@ public class OpenTogether implements ModConstructor {
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_NAME);
 
     public static final ConfigHolder CONFIG = ConfigHolder.builder(MOD_ID)
+            .client(ClientConfig.class)
             .common(CommonConfig.class)
             .server(ServerConfig.class);
     public static final Collection<DoubleBlockLogic> DOUBLE_BLOCK_LOGIC = List.of(DoubleDoorLogic.INSTANCE,

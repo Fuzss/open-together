@@ -14,17 +14,17 @@ public class ModRegistry {
      */
     public static final TagKey<Block> DOUBLE_DOORS_BLOCK_TAG = TAGS.registerBlockTag("double_doors");
     /**
-     * Blocks that may act as double trapdoors and can open together.
-     * <p>
-     * Limited to {@link net.minecraft.world.level.block.TrapDoorBlock}.
-     */
-    public static final TagKey<Block> DOUBLE_TRAPDOORS_BLOCK_TAG = TAGS.registerBlockTag("double_trapdoors");
-    /**
      * Blocks that may act as double fence gates and can open together.
      * <p>
      * Limited to {@link net.minecraft.world.level.block.FenceGateBlock}.
      */
     public static final TagKey<Block> DOUBLE_FENCE_GATES_BLOCK_TAG = TAGS.registerBlockTag("double_fence_gates");
+    /**
+     * Blocks that may act as double trapdoors and can open together.
+     * <p>
+     * Limited to {@link net.minecraft.world.level.block.TrapDoorBlock}.
+     */
+    public static final TagKey<Block> DOUBLE_TRAPDOORS_BLOCK_TAG = TAGS.registerBlockTag("double_trapdoors");
 
     public static void bootstrap() {
         // NO-OP
