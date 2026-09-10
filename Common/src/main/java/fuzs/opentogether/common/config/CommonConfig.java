@@ -1,8 +1,8 @@
 package fuzs.opentogether.common.config;
 
-import fuzs.puzzleslib.common.api.config.v3.Config;
-import fuzs.puzzleslib.common.api.config.v3.ConfigCore;
-import fuzs.puzzleslib.common.api.config.v3.ValueCallback;
+import fuzs.puzzleslib.api.config.v3.Config;
+import fuzs.puzzleslib.api.config.v3.ConfigCore;
+import fuzs.puzzleslib.api.config.v3.ValueCallback;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.util.Objects;
