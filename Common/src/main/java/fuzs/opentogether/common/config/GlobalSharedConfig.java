@@ -2,18 +2,18 @@ package fuzs.opentogether.common.config;
 
 public interface GlobalSharedConfig extends SharedConfig {
     default boolean openDoubleDoorsTogether() {
-        return this.getAllBlocksOption() && this.getDoubleDoorsOption();
+        return this.getAnyBlocksOption() && this.getDoubleDoorsOption();
     }
 
     default boolean openDoubleFenceGatesTogether() {
-        return this.getAllBlocksOption() && this.getDoubleFenceGatesOption();
+        return this.getAnyBlocksOption() && this.getDoubleFenceGatesOption();
     }
 
     default boolean openDoubleTrapdoorsTogether() {
-        return this.getAllBlocksOption() && this.getDoubleTrapdoorsOption();
+        return this.getAnyBlocksOption() && this.getDoubleTrapdoorsOption();
     }
 
-    boolean getAllBlocksOption();
+    boolean getAnyBlocksOption();
 
     boolean getDoubleDoorsOption();
 
@@ -27,7 +27,7 @@ public interface GlobalSharedConfig extends SharedConfig {
                 this.getDoubleTrapdoorsOption());
     }
 
-    default GlobalSharedConfig setAllBlocks(boolean allBlocks) {
+    default GlobalSharedConfig setAnyBlocks(boolean allBlocks) {
         return this;
     }
 }

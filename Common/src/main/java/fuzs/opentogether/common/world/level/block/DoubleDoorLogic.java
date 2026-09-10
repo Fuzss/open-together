@@ -1,14 +1,12 @@
 package fuzs.opentogether.common.world.level.block;
 
-import fuzs.opentogether.common.config.CommonConfig;
 import fuzs.opentogether.common.config.ServerConfig;
 import fuzs.opentogether.common.config.SharedConfig;
-import fuzs.puzzleslib.common.api.config.v3.serialization.ConfigDataSet;
+import fuzs.opentogether.common.init.ModRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoorHingeSide;
@@ -69,8 +67,8 @@ public class DoubleDoorLogic implements DoubleBlockLogic {
     }
 
     @Override
-    public ConfigDataSet<Block> getBlockDataSet(CommonConfig commonConfig) {
-        return commonConfig.doubleDoors.validBlocks;
+    public boolean isValidDoubleBlock(BlockState blockState) {
+        return blockState.is(ModRegistry.DOUBLE_DOORS_BLOCK_TAG);
     }
 
     @Override
