@@ -15,17 +15,17 @@ public class ClientConfig implements ConfigCore {
 
     @Config(name = "valid_double_doors",
             description = {"Blocks that may act as double doors which can open together.", CLIENT_ONLY_DISCLAIMER})
-    List<String> validDoubleDoorsRaw = ModBlockTagsProvider.addCommonDoors(KeyedValueProvider.<Block>tags())
+    List<String> validDoubleDoorsRaw = ModBlockTagsProvider.addCommonDoors(KeyedValueProvider.<Block>tags(Registries.BLOCK))
             .asStringList();
     @Config(name = "valid_double_fence_gates", description = {
             "Blocks that may act as double fence gates which can open together.", CLIENT_ONLY_DISCLAIMER
     })
-    List<String> validDoubleFenceGatesRaw = ModBlockTagsProvider.addCommonFenceGates(KeyedValueProvider.<Block>tags())
-            .asStringList();
+    List<String> validDoubleFenceGatesRaw = ModBlockTagsProvider.addCommonFenceGates(KeyedValueProvider.<Block>tags(
+            Registries.BLOCK)).asStringList();
     @Config(name = "valid_double_trapdoors",
             description = {"Blocks that may act as double trapdoors which can open together.", CLIENT_ONLY_DISCLAIMER})
-    List<String> validDoubleTrapdoorsRaw = ModBlockTagsProvider.addCommonTrapdoors(KeyedValueProvider.<Block>tags())
-            .asStringList();
+    List<String> validDoubleTrapdoorsRaw = ModBlockTagsProvider.addCommonTrapdoors(KeyedValueProvider.<Block>tags(
+            Registries.BLOCK)).asStringList();
 
     public ConfigDataSet<Block> validDoubleDoors = ConfigDataSet.from(Registries.BLOCK);
     public ConfigDataSet<Block> validDoubleFenceGates = ConfigDataSet.from(Registries.BLOCK);
