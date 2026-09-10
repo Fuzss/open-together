@@ -16,7 +16,7 @@ public final class SharedState implements GlobalSharedConfig {
             GlobalSharedConfig::getDoubleTrapdoorsOption,
             SharedState::new);
 
-    private final Optional<Boolean> allBlocks;
+    private final Optional<Boolean> anyBlocks;
     private final boolean doubleDoors;
     private final boolean doubleFenceGates;
     private final boolean doubleTrapdoors;
@@ -25,16 +25,16 @@ public final class SharedState implements GlobalSharedConfig {
         this(Optional.empty(), doubleDoors, doubleFenceGates, doubleTrapdoors);
     }
 
-    SharedState(Optional<Boolean> allBlocks, boolean doubleDoors, boolean doubleFenceGates, boolean doubleTrapdoors) {
-        this.allBlocks = allBlocks;
+    SharedState(Optional<Boolean> anyBlocks, boolean doubleDoors, boolean doubleFenceGates, boolean doubleTrapdoors) {
+        this.anyBlocks = anyBlocks;
         this.doubleDoors = doubleDoors;
         this.doubleFenceGates = doubleFenceGates;
         this.doubleTrapdoors = doubleTrapdoors;
     }
 
     @Override
-    public boolean getAllBlocksOption() {
-        return this.allBlocks.orElseGet(() -> OpenTogether.CONFIG.get(CommonConfig.class).getAllBlocksOption());
+    public boolean getAnyBlocksOption() {
+        return this.anyBlocks.orElseGet(() -> OpenTogether.CONFIG.get(CommonConfig.class).getAnyBlocksOption());
     }
 
     @Override
@@ -53,8 +53,8 @@ public final class SharedState implements GlobalSharedConfig {
     }
 
     @Override
-    public GlobalSharedConfig setAllBlocks(boolean allBlocks) {
-        return new SharedState(Optional.of(allBlocks),
+    public GlobalSharedConfig setAnyBlocks(boolean anyBlocks) {
+        return new SharedState(Optional.of(anyBlocks),
                 this.getDoubleDoorsOption(),
                 this.getDoubleFenceGatesOption(),
                 this.getDoubleTrapdoorsOption());

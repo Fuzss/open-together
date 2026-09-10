@@ -1,13 +1,11 @@
 package fuzs.opentogether.common.world.level.block;
 
-import fuzs.opentogether.common.config.CommonConfig;
 import fuzs.opentogether.common.config.ServerConfig;
 import fuzs.opentogether.common.config.SharedConfig;
-import fuzs.puzzleslib.common.api.config.v3.serialization.ConfigDataSet;
+import fuzs.opentogether.common.init.ModRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jspecify.annotations.Nullable;
@@ -56,8 +54,8 @@ public class DoubleTrapDoorLogic extends AbstractDoubleBlockLogic {
     }
 
     @Override
-    public ConfigDataSet<Block> getBlockDataSet(CommonConfig commonConfig) {
-        return commonConfig.doubleTrapdoors.validBlocks;
+    public boolean isValidDoubleBlock(BlockState blockState) {
+        return blockState.is(ModRegistry.DOUBLE_TRAPDOORS_BLOCK_TAG);
     }
 
     @Override
