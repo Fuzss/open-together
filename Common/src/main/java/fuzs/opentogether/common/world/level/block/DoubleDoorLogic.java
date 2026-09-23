@@ -47,7 +47,8 @@ public class DoubleDoorLogic implements DoubleBlockLogic {
 
     @Override
     public void forBlockNeighbors(BlockState blockState, Predicate<BlockPos> predicate) {
-        predicate.test(new BlockPos(this.getNeighborNormal(blockState)));
+        Vec3i neighborNormal = this.getNeighborNormal(blockState);
+        predicate.test(new BlockPos(neighborNormal.getX(), neighborNormal.getY(), neighborNormal.getZ()));
     }
 
     @Override
